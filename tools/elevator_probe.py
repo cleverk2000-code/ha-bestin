@@ -182,8 +182,10 @@ def main():
             if a.mode == "ipark-send":
                 ipark_send(a, opener, host)
     except Exception as err:
-        # Do not print HTTP exception URLs: legacy login embeds credentials in query.
-        print("ERROR:", type(err).__name__, file=sys.stderr)
+        # HTTP exceptions may contain login URLs with credentials: hide details.
+        # Our own ValueError diagnostics contain only fixed validation messages.
+        detail = str(err) if isinstance(err, ValueError) else ""
+        print("ERROR:", type(err).__name__, detail, file=sys.stderr)
         return 1
     return 0
 
